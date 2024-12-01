@@ -1,0 +1,40 @@
+definitions:
+  models.SignInRequest:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    type: object
+info:
+  contact: {}
+paths:
+  /api/auth-service/auth/signin:
+    post:
+      consumes:
+      - application/json
+      description: Login with email and password
+      parameters:
+      - description: User data
+        in: body
+        name: userData
+        required: true
+        schema:
+          $ref: '#/definitions/models.SignInRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Login as an authenticated user
+      tags:
+      - Authentication
+swagger: "2.0"
