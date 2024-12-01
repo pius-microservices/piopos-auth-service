@@ -19,7 +19,7 @@ This project uses [Golang](https://golang.org/), [Gin](https://github.com/gin-go
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/pius706975/golang-boilerplate-with-gin.git
+   git clone https://github.com/pius-microservices/piopos-auth-service.git
    ```
 
 2. Install dependencies:
@@ -82,7 +82,7 @@ Here's a breakdown of the project folder structure:
   - **swagger.json** and **swagger.yaml**: Swagger specification files
 
 - **interfaces/**: Interfaces for abstracting logic
-  - **auth.interface.go** and **user.interface.go**: Define interface contracts for auth and user modules
+  - **auth.interface.go**: Define interface contracts for auth modules
 
 - **middlewares/**: Middleware functions for request handling
   - **auth.middleware.go**: Authorization middleware
