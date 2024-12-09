@@ -17,7 +17,8 @@ func NewService(repo interfaces.AuthRepo) *authService {
 }
 
 type tokenResponse struct {
-	Token string `json:"token"`
+	AccessToken string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
 }
 
 func (service *authService) SignIn(email string, password string) (gin.H, int) {
@@ -33,11 +34,17 @@ func (service *authService) SignIn(email string, password string) (gin.H, int) {
 
 	jwt := middlewares.NewToken(user.ID)
 
-	token, err := jwt.CreateToken()
+	accessToken, err := jwt.CreateToken()
 
 	if err != nil {
 		return gin.H{"status": 500, "message": err.Error()}, 500
 	}
 
-	return gin.H{"data": user, "accessToken": tokenResponse{Token: token}}, 200
+	refreshToken, err := service.repo.CreateRefreshToken(user.ID)
+
+	if err != nil {
+		return gin.H{"status": 500, "message": "Failed to generate refresh token"}, 500
+	}
+
+	return gin.H{"data": user, "token": tokenResponse{AccessToken: accessToken, RefreshToken: refreshToken}}, 200
 }

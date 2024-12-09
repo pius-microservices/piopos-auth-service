@@ -8,6 +8,7 @@ import (
 
 type AuthRepo interface {
 	FetchUserByEmail(email string) (*models.User, error)
+	CreateRefreshToken(userId string) (string, error)
 }
 
 type AuthService interface {

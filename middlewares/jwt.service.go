@@ -17,7 +17,7 @@ type Claims struct {
 func NewToken(id string) *Claims {
 	return &Claims{
 		UserId:           id,
-		RegisteredClaims: jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24))},
+		RegisteredClaims: jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 1))},
 	}
 }
 
