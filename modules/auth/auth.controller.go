@@ -45,3 +45,63 @@ func (controller *authController) SignIn(ctx *gin.Context) {
 
 	ctx.JSON(status, responseData)
 }
+
+// SignOut godoc
+// @Summary Sign out
+// @Description Sign out by removing refresh token
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param userData body models.RefreshToken true "User data"
+// @Success 200
+// @Failure 401
+// @Failure 500
+// @Router /api/auth-service/auth/signout [post]
+func (controller *authController) SignOut(ctx *gin.Context) {
+	ctx.Header("Content-Type", "application/json")
+
+	var requestBody struct {
+		UserId       string `json:"user_id"`
+		RefreshToken string `json:"refresh_token"`
+	}
+
+	err := ctx.ShouldBindJSON(&requestBody)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": "Failed to parse request"})
+		return
+	}
+
+	responseData, status := controller.service.SignOut(requestBody.UserId, requestBody.RefreshToken)
+
+	ctx.JSON(status, responseData)
+}
+
+// RefreshToken godoc
+// @Summary Generate a new access token
+// @Description Validate and generate a new access token using user id and refresh token
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param userData body models.RefreshToken true "User data"
+// @Success 200
+// @Failure 401
+// @Failure 500
+// @Router /api/auth-service/auth/refresh-token [post]
+func (controller *authController) CreateNewAccessToken(ctx *gin.Context) {
+	ctx.Header("Content-Type", "application/json")
+
+	var requestBody struct {
+		UserId       string `json:"user_id"`
+		RefreshToken string `json:"refresh_token"`
+	}
+
+	err := ctx.ShouldBindJSON(&requestBody)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": "Failed to parse request"})
+		return
+	}
+
+	responseData, status := controller.service.CreateNewAccessToken(requestBody.UserId, requestBody.RefreshToken)
+
+	ctx.JSON(status, responseData)
+}

@@ -1,4 +1,14 @@
 definitions:
+  models.RefreshToken:
+    properties:
+      refresh_token:
+        type: string
+      user_id:
+        type: string
+    required:
+    - refresh_token
+    - user_id
+    type: object
   models.SignInRequest:
     properties:
       email:
@@ -13,6 +23,31 @@ definitions:
 info:
   contact: {}
 paths:
+  /api/auth-service/auth/refresh-token:
+    post:
+      consumes:
+      - application/json
+      description: Validate and generate a new access token using user id and refresh
+        token
+      parameters:
+      - description: User data
+        in: body
+        name: userData
+        required: true
+        schema:
+          $ref: '#/definitions/models.RefreshToken'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Generate a new access token
+      tags:
+      - Authentication
   /api/auth-service/auth/signin:
     post:
       consumes:
@@ -35,6 +70,30 @@ paths:
         "500":
           description: Internal Server Error
       summary: Login as an authenticated user
+      tags:
+      - Authentication
+  /api/auth-service/auth/signout:
+    post:
+      consumes:
+      - application/json
+      description: Sign out by removing refresh token
+      parameters:
+      - description: User data
+        in: body
+        name: userData
+        required: true
+        schema:
+          $ref: '#/definitions/models.RefreshToken'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+        "500":
+          description: Internal Server Error
+      summary: Sign out
       tags:
       - Authentication
 swagger: "2.0"

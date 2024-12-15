@@ -93,3 +93,82 @@ func (repo *authRepo) CreateRefreshToken(userId string) (string, error) {
 	return tokenResponse.RefreshToken, nil
 }
 
+func (repo *authRepo) DeleteRefreshToken(userId string, refreshToken string) (string, error) {
+	envCfg := config.LoadConfig()
+	url := fmt.Sprintf(envCfg.UserServiceBaseURL + envCfg.DeleteRefreshToken)
+
+	requestBody := map[string]string{
+		"user_id":       userId,
+		"refresh_token": refreshToken,
+	}
+
+	requestData, err := json.Marshal(requestBody)
+	if err != nil {
+		return "", err
+	}
+
+	request, err := http.NewRequest(http.MethodDelete, url, bytes.NewBuffer(requestData))
+	if err != nil {
+		return "", err
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(request)
+	if err != nil {
+		return "", err
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode != 200 {
+		body, _ := io.ReadAll(response.Body)
+		return "", fmt.Errorf("failed to delete refresh token: %s", string(body))
+	}
+
+	return "Refresh token deleted successfully", nil
+}
+
+func (repo *authRepo) ValidateRefreshToken(userId, refreshToken string) (string, error) {
+	envCfg := config.LoadConfig()
+	url := fmt.Sprintf(envCfg.UserServiceBaseURL + envCfg.ValidateRefreshToken)
+
+	requestBody := map[string]string{
+		"user_id":       userId,
+		"refresh_token": refreshToken,
+	}
+
+	requestData, err := json.Marshal(requestBody)
+	if err != nil {
+		return "", err
+	}
+
+	response, err := http.Post(url, "application/json", bytes.NewBuffer(requestData))
+	if err != nil {
+		return "", err
+	}
+
+	defer response.Body.Close()
+
+	if response.StatusCode != 200 {
+		body, _ := io.ReadAll(response.Body)
+		return "", fmt.Errorf("failed to validate refresh token: %s", string(body))
+	}
+
+	var tokenResponse struct {
+		AccessToken string `json:"access_token"`
+	}
+
+	body, err := io.ReadAll(response.Body)
+	if err != nil {
+		return "", nil
+	}
+
+	err = json.Unmarshal(body, &tokenResponse)
+	if err != nil {
+		return "", nil
+	}
+
+	return tokenResponse.AccessToken, nil
+}

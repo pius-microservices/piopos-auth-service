@@ -14,10 +14,10 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
-func NewToken(id string) *Claims {
+func NewToken(id string, expiresIn time.Duration) *Claims {
 	return &Claims{
 		UserId:           id,
-		RegisteredClaims: jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Minute * 1))},
+		RegisteredClaims: jwt.RegisteredClaims{ExpiresAt: jwt.NewNumericDate(time.Now().Add(expiresIn))},
 	}
 }
 

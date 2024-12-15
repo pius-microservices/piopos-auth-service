@@ -53,7 +53,7 @@ go run . serve
 
 ## API Documentation
 
-API documentation is generated using Swagger. You can access the documentation by running the server and visiting `<your base url>/docs/index.html` in your browser.
+API documentation is generated using Swagger. You can access the documentation by running the server and visiting `<your base url>/api/auth-service/docs/index.html` in your browser.
 
 ### Generating Swagger Docs
 
